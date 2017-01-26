@@ -1,14 +1,14 @@
 {
-    "name": "slim/slim-skeleton",
-    "description": "A Slim Framework skeleton application for rapid development",
-    "keywords": ["microframework", "rest", "router", "psr7"],
-    "homepage": "http://github.com/slimphp/Slim-Skeleton",
+    "name": "evoke-php/PSW",
+    "description": "An example weather application using the Slim Framework",
+    "keywords": ["slim", "rest", "example"],
+    "homepage": "http://github.com/evoke-php/PSW",
     "license": "MIT",
     "authors": [
         {
-            "name": "Josh Lockhart",
-            "email": "info@joshlockhart.com",
-            "homepage": "http://www.joshlockhart.com/"
+            "name": "Paul Young",
+            "email": "evoke@youngish.org",
+            "homepage": "http://youngish.org/"
         }
     ],
     "require": {
@@ -22,6 +22,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "PSW\\": "src/",
             "Tests\\": "tests/"
         }
     },

@@ -1,5 +1,5 @@
 <?php
-if (PHP_SAPI == 'cli-server') {
+if (PHP_SAPI === 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
     // something which should probably be served as a static file
     $url  = parse_url($_SERVER['REQUEST_URI']);
@@ -11,10 +11,19 @@ if (PHP_SAPI == 'cli-server') {
 
 require __DIR__ . '/../vendor/autoload.php';
 
-session_start();
+if (PHP_SAPI === 'cli') {
+    $argv = $GLOBALS['argv'];
+    array_shift($argv);
+
+    $pathInfo = implode('/', $argv);
+    $settings = require __DIR__ . '/../src/settings.php';
+    $settings['environment'] = \Slim\Http\Environment::mock(['REQUEST_URI' => '/' . $pathInfo]);
+} else {
+    $settings = require __DIR__ . '/../src/settings.php';
+    session_start();
+}
 
 // Instantiate the app
-$settings = require __DIR__ . '/../src/settings.php';
 $app = new \Slim\App($settings);
 
 // Set up dependencies
