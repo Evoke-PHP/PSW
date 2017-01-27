@@ -1,0 +1,29 @@
+table th {
+  padding-bottom: 10px;
+  padding-top: 10px;
+  background: #dd88ff22;
+  border: 1px solid #cc00ff; }
+table td {
+  border: 1px solid #cc00ff; }
+  table td a {
+    padding: 10px; }
+table a {
+  display: block;
+  text-decoration: none;
+  color: black; }
+
+.weather_reading .icon {
+  float: right;
+  width: 80px; }
+.weather_reading .temperature {
+  float: left;
+  font-size: 1.5em; }
+.weather_reading .comments.button {
+  background: #ff9900;
+  color: #FFF;
+  float: right;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 10px 0px; }
+
+/*# sourceMappingURL=index.css.map */

@@ -31,3 +31,11 @@ $container['ModelDataFeed'] = function ($c) {
 $container['ModelWeatherReading'] = function ($c) {
     return new PSW\Model\WeatherReading($c->get('db'));
 };
+
+$container['\PSW\Controller\Weather'] = function ($c) {
+    return new PSW\Controller\Weather(
+        $c->get('ModelWeatherReading'),
+        $c->get('renderer'),
+        $c->get('response')
+    );
+};

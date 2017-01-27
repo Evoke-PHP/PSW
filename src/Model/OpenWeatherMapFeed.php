@@ -64,13 +64,13 @@ class OpenWeatherMapFeed implements DataFeedInterface
 
         foreach ($decodedResult['list'] as $measurement) {
             $formattedResults[] = [
-                ':location_id'       => $this->locations[$measurement['id']],
-                ':measurement_time'  => $measurement['dt'],
-                ':icon'              => 'http://openweathermap.org/img/w/' . $measurement['weather'][0]['icon'] . '.png',
-                ':temperature'       => $measurement['main']['temp'],
-                ':humidity'          => $measurement['main']['humidity'],
-                ':description'       => $measurement['weather'][0]['description'],
-                ':short_description' => $measurement['weather'][0]['main']
+                'location_id'       => $this->locations[$measurement['id']],
+                'measurement_time'  => $measurement['dt'],
+                'icon'              => 'http://openweathermap.org/img/w/' . $measurement['weather'][0]['icon'] . '.png',
+                'temperature'       => $measurement['main']['temp'],
+                'humidity'          => $measurement['main']['humidity'],
+                'description'       => $measurement['weather'][0]['description'],
+                'short_description' => $measurement['weather'][0]['main']
             ];
         }
 

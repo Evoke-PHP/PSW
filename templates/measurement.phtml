@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>PHP Slim Weather App</title>
+        <link rel="stylesheet" href="/css/measurement.css" type="text/css"/>
+    </head>
+    <body>
+        <main>
+            <h1><?= $measurement['location'] . ' at <span>' . $measurement['measurement_time'] . '</span>'?></h1>
+
+             <div class="weather_reading">
+                 <img class="icon" src="<?= $measurement['icon'] ?>" alt="icon for <?= $measurement['short_description'] ?>"/>
+                 <div class="temperature"><?= $measurement['temperature'] ?>&deg;C</div>
+                 <div class="humidity"><?= $measurement['humidity'] ?>%</div>
+                 <div class="description"><?= $measurement['description'] ?></div>
+
+             </div>
+
+            <div class="comments"><?= count($measurement['comments']) ?> comments</div>
+        </main>
+    </body>
+</html>

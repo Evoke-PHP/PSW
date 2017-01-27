@@ -1,0 +1,49 @@
+$purple: #cc00ff;
+$faint_purple: #dd88ff22;
+$orange: #ff9900;
+
+table {
+    th {
+        padding-bottom: 10px;
+        padding-top: 10px;
+        background: $faint_purple;
+        border: 1px solid $purple;
+    }
+
+    td {
+        border: 1px solid $purple;
+
+        a {
+            padding: 10px;
+        }
+    }
+
+    a {
+        display: block;
+        text-decoration: none;
+        color: black;
+    }
+
+}
+
+.weather_reading {
+    .icon {
+        float: right;
+        width: 80px;
+    }
+
+    .temperature {
+        float: left;
+        font-size: 1.5em;
+    }
+
+    .comments.button {
+        background: $orange;
+        color: #FFF;
+        float: right;
+        padding: 5px;
+        border-radius: 5px;
+        margin: 10px 0px;
+    }
+}
+
