@@ -16,3 +16,4 @@ if (PHP_SAPI === 'cli') {
 
 $app->get('/', '\PSW\Controller\Weather:show');
 $app->get('/measurement/{measurement}', '\PSW\Controller\Weather:showMeasurement');
+$app->post('/measurement/{measurement}/comment', '\PSW\Controller\Weather:addComment');

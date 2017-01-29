@@ -6,6 +6,7 @@
         <link rel="stylesheet" href="/css/index.css" type="text/css"/>
     </head>
     <body>
+        <?php include "header.phtml"; ?>
         <h1>Demo Weather App</h1>
         <p>This is a demonstration web app for the display of weather information for a selection of cities.</p>
         <p>The weather is updated every 3 hours by a cron job which makes a request to OpenWeatherMap.</p>
@@ -17,6 +18,8 @@
                     <tr>
                         <td></td>
                         <?php
+                        ksort($locations);
+
                         foreach ($locations as $id => $location) {
                             echo "<th>$location</th>";
                         }
@@ -47,8 +50,12 @@ ELEM;
                         $hoursAgo = 3 * $intervalsAgo;
 
                         echo "<th>{$hoursAgo} hours ago</th>";
-                        foreach ($rowElements as $element) {
-                            echo "<td>$element</td>";
+                        foreach ($locations as $id => $location) {
+                            if (isset($rowElements[$id])) {
+                                echo "<td>$rowElements[$id]</td>";
+                            } else {
+                                echo "<td>No data</td>";
+                            }
                         }
 
                         echo "</tr>";

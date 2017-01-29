@@ -32,6 +32,22 @@ class WeatherReading
         $this->pdo = $pdo;
     }
 
+    public function addComment($comment)
+    {
+        $stmt = $this->pdo->prepare(<<<SQL
+INSERT INTO
+    weather_reading_comment (weather_reading_id, username, comment_text)
+    VALUES (:weather_reading_id,:username,:comment_text)
+SQL
+        );
+
+        $stmt->execute([
+            ':weather_reading_id' => $comment['measurement'],
+            ':username'           => $comment['name'],
+            ':comment_text'       => $comment['comment']
+        ]);
+    }
+
     public function getReading(int $readingID) : array
     {
         $stmt = $this->pdo->prepare(<<<SQL
@@ -45,7 +61,8 @@ SELECT
     weather_reading.short_description,
     weather_reading.temperature,
     weather_reading_comment.id AS comment_id,
-    weather_reading_comment.comment,
+    weather_reading_comment.comment_text,
+    weather_reading_comment.comment_time,
     weather_reading_comment.username
 FROM
     weather_reading
@@ -67,6 +84,7 @@ SQL
 
             if (!isset($reading[$id])) {
                 $reading[$id] = [
+                    'id'                => $row['id'],
                     'location'          => $row['name'],
                     'measurement_time'  => $row['measurement_time'],
                     'description'       => $row['description'],
@@ -80,8 +98,9 @@ SQL
 
             if (isset($commentID) && !isset($reading[$id]['comments'][$commentID])) {
                 $reading[$id]['comments'][$commentID] = [
-                    'comment'  => $row['comment'],
-                    'username' => $row['username']
+                    'comment_text' => $row['comment_text'],
+                    'comment_time' => $row['comment_time'],
+                    'username'     => $row['username']
                 ];
             }
         }

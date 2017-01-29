@@ -1,12 +1,10 @@
-$purple: #cc00ff;
-$faint_purple: #dd88ff22;
-$orange: #ff9900;
+@import "_colours.scss";
 
 table {
     th {
         padding-bottom: 10px;
         padding-top: 10px;
-        background: $faint_purple;
+        background: $light_purple;
         border: 1px solid $purple;
     }
 

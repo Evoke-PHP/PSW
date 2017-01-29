@@ -6,18 +6,46 @@
         <link rel="stylesheet" href="/css/measurement.css" type="text/css"/>
     </head>
     <body>
+        <?php include "header.phtml"; ?>
         <main>
-            <h1><?= $measurement['location'] . ' at <span>' . $measurement['measurement_time'] . '</span>'?></h1>
 
-             <div class="weather_reading">
+             <article class="weather_reading">
+                 <h1><?= $measurement['location'] ?></h1>
                  <img class="icon" src="<?= $measurement['icon'] ?>" alt="icon for <?= $measurement['short_description'] ?>"/>
                  <div class="temperature"><?= $measurement['temperature'] ?>&deg;C</div>
                  <div class="humidity"><?= $measurement['humidity'] ?>%</div>
                  <div class="description"><?= $measurement['description'] ?></div>
+                 <div class="time"><?= $measurement['measurement_time'] ?></div>
+                 <div class="clear"></div>
+             </article>
 
-             </div>
+            <form class="add_comment" method="POST" action="/measurement/<?= $measurement['id'] ?>/comment">
+                <h2>Add a comment</h2>
+                <label for="name">Name (Optional)</label>
+                <input id="name" name="name" type="text"/>
+                <label for="comment">Comment</label>
+                <textarea id="comment" name="comment" rows="5" col="30"></textarea>
+                <input name="add" type="submit" value="Add comment"/>
+            </form>
 
-            <div class="comments"><?= count($measurement['comments']) ?> comments</div>
+            <section class="comments">
+                <h1>Comments<span class="comment_count"><?= count($measurement['comments']) ?> comments</span></h1>
+                <?php
+                foreach ($measurement['comments'] as $comment) {
+                    $username = empty($comment['username']) ? 'Anonymous' : $comment['username'];
+                    echo <<<COMMENT
+<div class="comment">
+    <img alt="User Icon" src="/img/usericon.png"/>
+    <div>
+        <span class="username">${comment['username']}</span> at <span class="time">${comment['comment_time']}</span>
+    </div>
+    <div class="text">${comment['comment_text']}</div>
+    <div class="clear"></div>
+</div>
+COMMENT;
+                }
+                ?>
+            </section>
         </main>
     </body>
 </html>

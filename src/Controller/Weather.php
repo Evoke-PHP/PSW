@@ -43,6 +43,11 @@ class Weather
         $this->renderer            = $renderer;
     }
 
+    public function addComment(Request $request, Response $response, array $args)
+    {
+        $this->modelWeatherReading->addComment($args + $request->getParsedBody());
+        return $response->withStatus(302)->withHeader('Location', '/measurement/' . $args['measurement']);
+    }
 
     public function show(Request $request, Response $response)
     {
