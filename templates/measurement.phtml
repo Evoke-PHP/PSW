@@ -24,8 +24,10 @@
                  <div class="clear"></div>
              </article>
 
-            <form class="add_comment" method="POST" action="/measurement/<?= htmlspecialchars($measurement['id']) ?>/comment">
+            <form class="add_comment" method="POST" action="/weather/measurement/<?= htmlspecialchars($measurement['id']) ?>/comment">
                 <h2>Add a comment</h2>
+                <input type="hidden" name="<?= $name_key ?>" value="<?= $name ?>">
+                <input type="hidden" name="<?= $value_key ?>" value="<?= $value ?>">
                 <label for="name">Name (Optional)</label>
                 <input id="name" name="name" type="text"/>
                 <label for="comment">Comment</label>

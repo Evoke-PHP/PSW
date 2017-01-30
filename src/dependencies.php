@@ -3,6 +3,10 @@
 
 $container = $app->getContainer();
 
+$container['csrf'] = function ($c) {
+    return new \Slim\Csrf\Guard;
+};
+
 // view renderer
 $container['renderer'] = function ($c) {
     $settings = $c->get('settings')['renderer'];
@@ -37,8 +41,8 @@ $container['ModelWeatherReading'] = function ($c) {
 
 $container['\PSW\Controller\Weather'] = function ($c) {
     return new PSW\Controller\Weather(
+        $c->get('csrf'),
         $c->get('ModelWeatherReading'),
-        $c->get('renderer'),
-        $c->get('response')
+        $c->get('renderer')
     );
 };

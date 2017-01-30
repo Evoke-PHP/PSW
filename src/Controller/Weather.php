@@ -7,6 +7,7 @@
 namespace PSW\Controller;
 
 use PSW\Model\WeatherReading;
+use Slim\Csrf\Guard;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views\PhpRenderer;
@@ -21,6 +22,11 @@ use Slim\Views\PhpRenderer;
 class Weather
 {
     /**
+     * @var Guard
+     */
+    protected $csrf;
+
+    /**
      * @var WeatherReading
      */
     protected $modelWeatherReading;
@@ -33,12 +39,13 @@ class Weather
     /**
      * Weather constructor.
      *
+     * @param Guard          $csrf
      * @param WeatherReading $modelWeatherReading
      * @param PhpRenderer    $renderer
-     * @param Response       $response
      */
-    public function __construct(WeatherReading $modelWeatherReading, PhpRenderer $renderer)
+    public function __construct(Guard $csrf,WeatherReading $modelWeatherReading, PhpRenderer $renderer)
     {
+        $this->csrf                = $csrf;
         $this->modelWeatherReading = $modelWeatherReading;
         $this->renderer            = $renderer;
     }
@@ -63,10 +70,21 @@ class Weather
         $measurements = $this->modelWeatherReading->getReading($args['measurement']);
         $measurement = reset($measurements);
 
+       $nameKey = $this->csrf->getTokenNameKey();
+        $valueKey = $this->csrf->getTokenValueKey();
+        $name = $request->getAttribute($nameKey);
+        $value = $request->getAttribute($valueKey);
+
         $this->renderer->render(
             $response,
             'measurement.phtml',
-            ['measurement' => $measurement]
+            [
+                'measurement' => $measurement,
+                'name_key'    => $nameKey,
+                'value_key'   => $valueKey,
+                'name'        => $name,
+                'value'       => $value
+            ]
         );
     }
 }
