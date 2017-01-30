@@ -1,4 +1,5 @@
 <?php
 // Application middleware
-
-$app->add($container->get('csrf'));
+if (PHP_SAPI !== 'cli') {
+    $app->add($container->get('csrf'));
+}
