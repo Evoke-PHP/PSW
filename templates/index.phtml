@@ -23,7 +23,7 @@
             ksort($locations);
 
             foreach ($locations as $id => $location) {
-                echo "<th>$location</th>";
+                echo '<th>' . htmlspecialchars($location) . '</th>';
             }
             ?>
         </tr>
@@ -56,16 +56,16 @@
                         '<img src="https://poweredby.yahoo.com/purple.png" width="134" height="29"/></a>'
                         : '';
 
-                    $rowElements[$locationID] = <<<ELEM
-<a class="weather_reading" href="/weather/measurement/{$readingID}">
-    <img class="icon" src="{$reading['icon']}" alt="{$reading['short_description']}"/>
-    <div class="temperature">{$reading['temperature']}&deg;C</div>
-    <div class="humidity">{$reading['humidity']}%</div>
-    <div class="short_description">{$reading['short_description']}</div>
-</a>
-{$poweredByYahoo}
-<a class="comments button" href="/weather/measurement/{$readingID}">${reading['comments']}</a>
-ELEM;
+                    $rowElements[$locationID] =
+                        '<a class="weather_reading" href="/weather/measurement/' . (int)($readingID) . '">' .
+                        '<img class="icon" src="' . htmlspecialchars($reading['icon']) . '" ' .
+                        'alt="' . htmlspecialchars($reading['short_description']) . '"/>' .
+                        '<div class="temperature">' . htmlspecialchars($reading['temperature']) . '&deg;C</div>' .
+                        '<div class="humidity">' . htmlspecialchars($reading['humidity']) . '%</div>' .
+                        '<div class="short_description">' . htmlspecialchars($reading['short_description']) . '</div>' .
+                        '</a>' . $poweredByYahoo .
+                        '<a class="comments button" href="/weather/measurement/' . (int)($readingID) . '">' .
+                        (int)($reading['comments']) . '</a>';
                 }
             }
 

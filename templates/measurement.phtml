@@ -10,11 +10,11 @@
         <main>
 
              <article class="weather_reading">
-                 <h1><?= $measurement['location'] ?></h1>
-                 <img class="icon" src="<?= $measurement['icon'] ?>" alt="icon for <?= $measurement['short_description'] ?>"/>
-                 <div class="temperature"><?= $measurement['temperature'] ?>&deg;C</div>
-                 <div class="humidity"><?= $measurement['humidity'] ?>%</div>
-                 <div class="description"><?= $measurement['description'] ?></div>
+                 <h1><?= htmlspecialchars($measurement['location']) ?></h1>
+                 <img class="icon" src="<?= htmlspecialchars($measurement['icon']) ?>" alt="icon for <?= htmlspecialchars($measurement['short_description']) ?>"/>
+                 <div class="temperature"><?= htmlspecialchars($measurement['temperature']) ?>&deg;C</div>
+                 <div class="humidity"><?= htmlspecialchars($measurement['humidity']) ?>%</div>
+                 <div class="description"><?= htmlspecialchars($measurement['description']) ?></div>
 
                  <?php
                     $utcTime = new DateTime($measurement['measurement_time']);
@@ -24,7 +24,7 @@
                  <div class="clear"></div>
              </article>
 
-            <form class="add_comment" method="POST" action="/measurement/<?= $measurement['id'] ?>/comment">
+            <form class="add_comment" method="POST" action="/measurement/<?= htmlspecialchars($measurement['id']) ?>/comment">
                 <h2>Add a comment</h2>
                 <label for="name">Name (Optional)</label>
                 <input id="name" name="name" type="text"/>
@@ -37,14 +37,16 @@
                 <h1>Comments<span class="comment_count"><?= count($measurement['comments']) ?> comments</span></h1>
                 <?php
                 foreach ($measurement['comments'] as $comment) {
-                    $username = empty($comment['username']) ? 'Anonymous' : $comment['username'];
+                    $username = empty($comment['username']) ? 'Anonymous' : htmlspecialchars($comment['username']);
+                    $commentTime = htmlspecialchars($comment['comment_time']);
+                    $commentText = htmlspecialchars($comment['comment_text']);
                     echo <<<COMMENT
 <div class="comment">
     <img alt="User Icon" src="/weather/img/usericon.png"/>
     <div>
-        <span class="username">${comment['username']}</span> at <span class="time">${comment['comment_time']}</span>
+        <span class="username">${username}</span> at <span class="time">${commentTime}</span>
     </div>
-    <div class="text">${comment['comment_text']}</div>
+    <div class="text">${commentText}</div>
     <div class="clear"></div>
 </div>
 COMMENT;
