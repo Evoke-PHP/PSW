@@ -21,27 +21,35 @@ use PSW\Model\WeatherReading;
 class Update
 {
     /**
-     * @var DataFeedInterface
+     * @var [DataFeedInterface]
      */
-    protected $modelDataFeed;
+    protected $modelDataFeeds;
 
     /**
      * @var WeatherReading
      */
     protected $modelWeatherReading;
 
-    public function __construct(DataFeedInterface $modelDataFeed, WeatherReading $modelWeatherReading)
+    public function __construct(array $modelDataFeeds, WeatherReading $modelWeatherReading)
     {
-        $this->modelDataFeed       = $modelDataFeed;
+        $this->modelDataFeeds      = $modelDataFeeds;
         $this->modelWeatherReading = $modelWeatherReading;
     }
 
     public function execute(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $this->modelDataFeed->setLocations($this->modelWeatherReading->getLocations($this->modelDataFeed->getFeedID()));
-        $this->modelWeatherReading->store($this->modelDataFeed->getData());
+        foreach ($this->modelDataFeeds as $dataFeed) {
+            try {
+                $dataFeed->setLocations($this->modelWeatherReading->getLocations($dataFeed->getFeedID()));
+                $data = $dataFeed->getData();
+                $this->modelWeatherReading->store($data);
+                return $response->withStatus(200);
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
 
-        return $response->withStatus(200);
+        return $response->withBody('Failed to get data from any feed.')->withStatus(503);
     }
 }
 // EOF

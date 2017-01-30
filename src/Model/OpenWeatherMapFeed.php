@@ -16,19 +16,13 @@ use JsonSchema\Exception\JsonDecodingException;
  * @copyright Copyright (c) 2017 Paul Young
  * @package   PSW\Model
  */
-class OpenWeatherMapFeed implements DataFeedInterface
+class OpenWeatherMapFeed extends LocationFeed
 {
     /**
      * The api key for our open weather map feed.
      * @var string
      */
     protected $apiKey;
-
-    /**
-     * The locations to retrieve the weather for.
-     * @var mixed[]
-     */
-    protected $locations;
 
     /**
      * OpenWeatherMapFeed constructor.
@@ -57,7 +51,7 @@ class OpenWeatherMapFeed implements DataFeedInterface
         $decodedResult = json_decode($result, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \DomainException('Unable to decode: ' . var_dump($result));
+            throw new \DomainException('Unable to decode: ' . var_export($result, true));
         }
 
         $formattedResults = [];
@@ -83,14 +77,6 @@ class OpenWeatherMapFeed implements DataFeedInterface
     public function getFeedID(): string
     {
         return 'openweathermap_id';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setLocations(Array $locations)
-    {
-        $this->locations = $locations;
     }
 }
 // EOF

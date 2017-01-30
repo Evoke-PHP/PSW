@@ -9,7 +9,7 @@
         <?php include "header.phtml"; ?>
         <h1>Demo Weather App</h1>
         <p>This is a demonstration web app for the display of weather information for a selection of cities.</p>
-        <p>The weather is updated every 3 hours by a cron job which makes a request to OpenWeatherMap.</p>
+        <p>The weather data is updated every 3 hours from either <a href="https://openweathermap.org/api" target="_blank">OpenWeatherMap</a> or <a href="https://developer.yahoo.com/weather/" target="_blank">Yahoo</a>.</p>
         <p>This web application was written by Paul Young using Slim (a micro framework for PHP).</p>
 
         <div>
@@ -34,15 +34,20 @@
 
                         foreach ($locationReadings as $locationID => $readings) {
                             foreach ($readings as $readingID => $reading) {
+                                $poweredByYahoo = (strstr($reading['icon'], 'yimg') !== false) ?
+                                    '<a class="powered_by_yahoo" href="https://www.yahoo.com/?ilc=401" target="_blank">' .
+                                    '<img src="https://poweredby.yahoo.com/purple.png" width="134" height="29"/></a>'
+                                    : '';
+
                                 $rowElements[$locationID] = <<<ELEM
 <a class="weather_reading" href="/measurement/{$readingID}">
-    <img class="icon" src="{$reading['icon']}" alt="icon for {$reading['short_description']}"/>
+    <img class="icon" src="{$reading['icon']}" alt="{$reading['short_description']}"/>
     <div class="temperature">{$reading['temperature']}&deg;C</div>
     <div class="humidity">{$reading['humidity']}%</div>
     <div class="short_description">{$reading['short_description']}</div>
-    <div class="comments button">${reading['comments']} comments</div>
 </a>
-
+{$poweredByYahoo}
+<a class="comments button" href="/measurement/{$readingID}">${reading['comments']}</a>
 ELEM;
                             }
                         }

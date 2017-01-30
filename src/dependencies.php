@@ -24,8 +24,11 @@ $container['db'] = function ($c) {
     return new PDO($settings['dsn'], $settings['username'], $settings['passwd'], $settings['options']);
 };
 
-$container['ModelDataFeed'] = function ($c) {
-    return new PSW\Model\OpenWeatherMapFeed($c->get('settings')['weather_api_key']);
+$container['ModelDataFeeds'] = function ($c) {
+    return [
+        new PSW\Model\OpenWeatherMapFeed($c->get('settings')['weather_api_key']),
+        new PSW\Model\YahooFeed
+    ];
 };
 
 $container['ModelWeatherReading'] = function ($c) {

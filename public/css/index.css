@@ -1,29 +1,62 @@
+.clear {
+  clear: both; }
+
 table th {
   padding-bottom: 10px;
   padding-top: 10px;
   background: #dd88ff22;
   border: 1px solid #cc00ff; }
 table td {
-  border: 1px solid #cc00ff; }
-  table td a {
-    padding: 10px; }
+  border: 1px solid #cc00ff;
+  padding-bottom: 0;
+  vertical-align: top; }
 table a {
   display: block;
   text-decoration: none;
   color: black; }
 
-.weather_reading .icon {
-  float: right;
-  width: 80px; }
-.weather_reading .temperature {
-  float: left;
-  font-size: 1.5em; }
-.weather_reading .comments.button {
-  background: #ff9900;
-  color: #FFF;
-  float: right;
-  padding: 5px;
+.weather_reading {
+  padding: 10px 10px 0px 10px; }
+  .weather_reading .icon {
+    float: right;
+    width: 80px; }
+  .weather_reading .temperature {
+    float: left;
+    font-size: 1.5em; }
+  .weather_reading .humidity {
+    clear: left; }
+
+.comments.button {
+  border: 2px solid #ff9900;
   border-radius: 5px;
-  margin: 10px 0px; }
+  color: #550088;
+  clear: right;
+  font-family: fantasy;
+  font-weight: 900;
+  float: right;
+  padding: 0 5px;
+  position: relative;
+  margin: 5px 5px 10px 10px; }
+  .comments.button:before {
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    right: 2px;
+    bottom: -8px;
+    border: 4px solid;
+    border-color: #ff9900 #ff9900 transparent transparent; }
+  .comments.button:after {
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    right: 4px;
+    bottom: -4px;
+    border: 3px solid;
+    border-color: white white transparent transparent; }
+
+.powered_by_yahoo {
+  display: inline-block; }
 
 /*# sourceMappingURL=index.css.map */
