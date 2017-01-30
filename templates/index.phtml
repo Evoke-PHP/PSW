@@ -1,45 +1,48 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <title>PHP Slim Weather App</title>
-        <link rel="stylesheet" href="/css/index.css" type="text/css"/>
-    </head>
-    <body>
-        <?php include "header.phtml"; ?>
-        <h1>Demo Weather App</h1>
-        <p>This is a demonstration web app for the display of weather information for a selection of cities.</p>
-        <p>The weather data is updated every 3 hours from either <a href="https://openweathermap.org/api" target="_blank">OpenWeatherMap</a> or <a href="https://developer.yahoo.com/weather/" target="_blank">Yahoo</a>.</p>
-        <p>This web application was written by Paul Young using Slim (a micro framework for PHP).</p>
+<head>
+    <meta charset="utf-8"/>
+    <title>PHP Slim Weather App</title>
+    <link rel="stylesheet" href="/css/index.css" type="text/css"/>
+</head>
+<body>
+<?php include "header.phtml"; ?>
+<main>
+    <h1>Demo Weather App</h1>
+    <p>This is a demonstration web app for the display of weather information for a selection of cities.</p>
+    <p>The weather data is updated every 3 hours from either <a href="https://openweathermap.org/api"
+                                                                target="_blank">OpenWeatherMap</a> or <a
+                href="https://developer.yahoo.com/weather/" target="_blank">Yahoo</a>.</p>
+    <p>This web application was written by Paul Young using Slim (a micro framework for PHP).</p>
 
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <td></td>
-                        <?php
-                        ksort($locations);
 
-                        foreach ($locations as $id => $location) {
-                            echo "<th>$location</th>";
-                        }
-                        ?>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    foreach ($time_intervals as $intervalsAgo => $locationReadings) {
-                        echo "<tr>";
-                        $rowElements = [];
+    <table>
+        <thead>
+        <tr>
+            <td></td>
+            <?php
+            ksort($locations);
 
-                        foreach ($locationReadings as $locationID => $readings) {
-                            foreach ($readings as $readingID => $reading) {
-                                $poweredByYahoo = (strstr($reading['icon'], 'yimg') !== false) ?
-                                    '<a class="powered_by_yahoo" href="https://www.yahoo.com/?ilc=401" target="_blank">' .
-                                    '<img src="https://poweredby.yahoo.com/purple.png" width="134" height="29"/></a>'
-                                    : '';
+            foreach ($locations as $id => $location) {
+                echo "<th>$location</th>";
+            }
+            ?>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        foreach ($time_intervals as $intervalsAgo => $locationReadings) {
+            echo "<tr>";
+            $rowElements = [];
 
-                                $rowElements[$locationID] = <<<ELEM
+            foreach ($locationReadings as $locationID => $readings) {
+                foreach ($readings as $readingID => $reading) {
+                    $poweredByYahoo = (strstr($reading['icon'], 'yimg') !== false) ?
+                        '<a class="powered_by_yahoo" href="https://www.yahoo.com/?ilc=401" target="_blank">' .
+                        '<img src="https://poweredby.yahoo.com/purple.png" width="134" height="29"/></a>'
+                        : '';
+
+                    $rowElements[$locationID] = <<<ELEM
 <a class="weather_reading" href="/measurement/{$readingID}">
     <img class="icon" src="{$reading['icon']}" alt="{$reading['short_description']}"/>
     <div class="temperature">{$reading['temperature']}&deg;C</div>
@@ -49,25 +52,32 @@
 {$poweredByYahoo}
 <a class="comments button" href="/measurement/{$readingID}">${reading['comments']}</a>
 ELEM;
-                            }
-                        }
+                }
+            }
 
-                        $hoursAgo = 3 * $intervalsAgo;
+            $time = new DateTime;
+            $time->setTimezone(new DateTimeZone('UTC'));
 
-                        echo "<th>{$hoursAgo} hours ago</th>";
-                        foreach ($locations as $id => $location) {
-                            if (isset($rowElements[$id])) {
-                                echo "<td>$rowElements[$id]</td>";
-                            } else {
-                                echo "<td>No data</td>";
-                            }
-                        }
+            if ($intervalsAgo > 0) {
+                $time->sub(new DateInterval('PT' . ($intervalsAgo * 3) . 'H'));
+            }
 
-                        echo "</tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </div>
-    </body>
+            echo "<th>{$time->format('Y-m-d H:i e')}</th>";
+            foreach ($locations as $id => $location) {
+                if (isset($rowElements[$id])) {
+                    echo "<td>$rowElements[$id]</td>";
+                } else {
+                    echo "<td>No data</td>";
+                }
+            }
+
+            echo "</tr>";
+        }
+        ?>
+        </tbody>
+    </table>
+
+    <p>Created by Paul Young using the PHP Slim framework.</p>
+</main>
+</body>
 </html>

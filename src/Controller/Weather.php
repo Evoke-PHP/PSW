@@ -60,10 +60,13 @@ class Weather
 
     public function showMeasurement(Request $request, Response $response, array $args)
     {
+        $measurements = $this->modelWeatherReading->getReading($args['measurement']);
+        $measurement = reset($measurements);
+
         $this->renderer->render(
             $response,
             'measurement.phtml',
-            ['measurement' => reset($this->modelWeatherReading->getReading($args['measurement']))]
+            ['measurement' => $measurement]
         );
     }
 }

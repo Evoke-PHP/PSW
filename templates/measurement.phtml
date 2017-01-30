@@ -15,7 +15,12 @@
                  <div class="temperature"><?= $measurement['temperature'] ?>&deg;C</div>
                  <div class="humidity"><?= $measurement['humidity'] ?>%</div>
                  <div class="description"><?= $measurement['description'] ?></div>
-                 <div class="time"><?= $measurement['measurement_time'] ?></div>
+
+                 <?php
+                    $utcTime = new DateTime($measurement['measurement_time']);
+                    $utcTime->setTimezone(new DateTimeZone('UTC'));
+                    echo '<div class="time">Measured at ' . $utcTime->format('Y-m-d H:i:s e') . '</div>';
+                 ?>
                  <div class="clear"></div>
              </article>
 

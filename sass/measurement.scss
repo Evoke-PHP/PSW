@@ -1,4 +1,5 @@
 @import "_colours";
+@import "_header";
 
 .clear {
     clear: both;
@@ -33,6 +34,11 @@
         margin: 20px;
         float: left;
         font-size: 2em;
+    }
+
+    .time {
+        clear: both;
+        margin: 10px;
     }
 }
 

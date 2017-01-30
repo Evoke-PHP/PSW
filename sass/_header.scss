@@ -1,0 +1,40 @@
+body, header {
+    margin: 0 auto;
+    max-width: 1200px;
+    min-width: 480px;
+}
+
+header {
+    background: #f6f6f6 none repeat scroll 0 0;
+    border-bottom: 1px solid #999;
+    border-left: 1px solid #999;
+    border-right: 1px solid #999;
+    display: block;
+    padding-top: 10px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+
+    nav {
+        position: relative;
+        height: 50px;
+
+        .home {
+            font-size: 2em;
+            height: 60px;
+            margin-left: 20px;
+        }
+
+        a {
+            color: #000;
+            text-decoration: none;
+        }
+    }
+}
+
+main {
+    margin-top: 70px;
+}
+
+
+
