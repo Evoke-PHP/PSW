@@ -15,7 +15,6 @@
                 href="https://developer.yahoo.com/weather/" target="_blank">Yahoo</a>.</p>
     <p>This web application was written by Paul Young using Slim (a micro framework for PHP).</p>
 
-
     <table>
         <thead>
         <tr>
@@ -31,6 +30,21 @@
         </thead>
         <tbody>
         <?php
+        // Round the current time to the nearest measured interval
+        $time = new DateTime;
+        $time->setTimezone(new DateTimeZone('UTC'));
+        $hours            = $time->format('H');
+        $minutes          = $time->format('i');
+        $seconds          = $time->format('s');
+        $totalSeconds     = (int)($seconds) + (int)($minutes * 60) + (int)($hours * 3600);
+        $remainderSeconds = $totalSeconds % (10800); // 3 hours
+
+        if ($remainderSeconds > 5400) { // 1.5 hours
+            $time->add(new DateInterval('PT' . (10800 - $remainderSeconds) . 'S'));
+        } else {
+            $time->sub(new DateInterval('PT' . $remainderSeconds . 'S'));
+        }
+
         foreach ($time_intervals as $intervalsAgo => $locationReadings) {
             echo "<tr>";
             $rowElements = [];
@@ -55,14 +69,13 @@ ELEM;
                 }
             }
 
-            $time = new DateTime;
-            $time->setTimezone(new DateTimeZone('UTC'));
+            $measurementTime = clone $time;
 
             if ($intervalsAgo > 0) {
-                $time->sub(new DateInterval('PT' . ($intervalsAgo * 3) . 'H'));
+                $measurementTime->sub(new DateInterval('PT' . ($intervalsAgo * 3) . 'H'));
             }
 
-            echo "<th>{$time->format('Y-m-d H:i e')}</th>";
+            echo "<th>{$measurementTime->format('Y-m-d H:i e')}</th>";
             foreach ($locations as $id => $location) {
                 if (isset($rowElements[$id])) {
                     echo "<td>$rowElements[$id]</td>";
