@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>PHP Slim Weather App</title>
-    <link rel="stylesheet" href="/css/index.css" type="text/css"/>
+    <link rel="stylesheet" href="/weather/css/index.css" type="text/css"/>
 </head>
 <body>
 <?php include "header.phtml"; ?>
@@ -57,14 +57,14 @@
                         : '';
 
                     $rowElements[$locationID] = <<<ELEM
-<a class="weather_reading" href="/measurement/{$readingID}">
+<a class="weather_reading" href="/weather/measurement/{$readingID}">
     <img class="icon" src="{$reading['icon']}" alt="{$reading['short_description']}"/>
     <div class="temperature">{$reading['temperature']}&deg;C</div>
     <div class="humidity">{$reading['humidity']}%</div>
     <div class="short_description">{$reading['short_description']}</div>
 </a>
 {$poweredByYahoo}
-<a class="comments button" href="/measurement/{$readingID}">${reading['comments']}</a>
+<a class="comments button" href="/weather/measurement/{$readingID}">${reading['comments']}</a>
 ELEM;
                 }
             }

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8"/>
         <title>PHP Slim Weather App</title>
-        <link rel="stylesheet" href="/css/measurement.css" type="text/css"/>
+        <link rel="stylesheet" href="/weather/css/measurement.css" type="text/css"/>
     </head>
     <body>
         <?php include "header.phtml"; ?>
@@ -40,7 +40,7 @@
                     $username = empty($comment['username']) ? 'Anonymous' : $comment['username'];
                     echo <<<COMMENT
 <div class="comment">
-    <img alt="User Icon" src="/img/usericon.png"/>
+    <img alt="User Icon" src="/weather/img/usericon.png"/>
     <div>
         <span class="username">${comment['username']}</span> at <span class="time">${comment['comment_time']}</span>
     </div>
