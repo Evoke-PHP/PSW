@@ -13,6 +13,11 @@ table {
         border: 1px solid $purple;
     }
 
+    .upper_header td {
+        border: none;
+        padding: 10px;
+    }
+
     td {
         border: 1px solid $purple;
         padding-bottom: 0;
@@ -20,11 +25,44 @@ table {
     }
 
     a {
+        color: black;
         display: block;
         text-decoration: none;
-        color: black;
     }
 
+    .time_filter {
+        float: right;
+        font-size: 14px;
+
+        .button_group {
+            font-size: 0;
+
+            a {
+                border: 1px solid $dark_purple;
+                background: white;
+                color: inherit;
+                display: inline-block;
+                font-weight: 900;
+                font-size: 14px;
+                padding: 5px;
+
+                &.first {
+                    border-bottom-left-radius: 5px;
+                    border-top-left-radius: 5px;
+                }
+
+                &.last {
+                    border-bottom-right-radius: 5px;
+                    border-top-right-radius: 5px;
+                }
+
+                &[selected=selected] {
+                    background: $purple;
+                    color: white;
+                }
+            }
+        }
+    }
 }
 
 .weather_reading {

@@ -36,14 +36,39 @@ table th {
   padding-top: 10px;
   background: #dd88ff22;
   border: 1px solid #cc00ff; }
+table .upper_header td {
+  border: none;
+  padding: 10px; }
 table td {
   border: 1px solid #cc00ff;
   padding-bottom: 0;
   vertical-align: top; }
 table a {
+  color: black;
   display: block;
-  text-decoration: none;
-  color: black; }
+  text-decoration: none; }
+table .time_filter {
+  float: right;
+  font-size: 14px; }
+  table .time_filter .button_group {
+    font-size: 0; }
+    table .time_filter .button_group a {
+      border: 1px solid #8800aa;
+      background: white;
+      color: inherit;
+      display: inline-block;
+      font-weight: 900;
+      font-size: 14px;
+      padding: 5px; }
+      table .time_filter .button_group a.first {
+        border-bottom-left-radius: 5px;
+        border-top-left-radius: 5px; }
+      table .time_filter .button_group a.last {
+        border-bottom-right-radius: 5px;
+        border-top-right-radius: 5px; }
+      table .time_filter .button_group a[selected=selected] {
+        background: #cc00ff;
+        color: white; }
 
 .weather_reading {
   padding: 10px 10px 0 10px; }
