@@ -6,6 +6,8 @@
  */
 namespace PSW\Model;
 
+use DateTime;
+use DateInterval;
 use PDO;
 
 /**
@@ -21,6 +23,11 @@ class WeatherReading
      * @var PDO
      */
     protected $pdo;
+
+    /**
+     * @var string
+     */
+    protected $timeFilter = 'day';
 
     /**
      * WeatherReading constructor.
@@ -128,14 +135,17 @@ FROM
     LEFT JOIN location ON weather_reading.location_id = location.id
     LEFT JOIN weather_reading_comment ON weather_reading.id = weather_reading_comment.weather_reading_id
 WHERE
-    weather_reading.measurement_time > (NOW() - INTERVAL 1 WEEK)
+    weather_reading.measurement_time > :time_from
 GROUP BY
     weather_reading.id
 ORDER BY
     intervals_ago,location_id,measurement_time
 SQL
         );
-        $stmt->execute();
+
+        $timeFrom = new DateTime;
+        $timeFrom->sub(new DateInterval('P1' . ($this->timeFilter === 'day' ? 'D' : 'W')));
+        $stmt->execute(['time_from' => $timeFrom->format('Y-m-d H:i:s')]);
 
         $weatherByTimeInterval = [];
         $locations             = [];
@@ -171,6 +181,11 @@ SQL
         return ['locations' => $locations, 'time_intervals' => $weatherByTimeInterval];
     }
 
+    public function getTimeFilter() : string
+    {
+        return $this->timeFilter;
+    }
+
     /**
      * Get the locations as an array indexed by their feed id's.
      *
@@ -182,6 +197,16 @@ SQL
         $stmt = $this->pdo->query('SELECT ' . $feedId . ',id FROM location');
 
         return $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+    }
+
+    public function setTimeFilter(string $filter)
+    {
+        if ($filter !== 'day' && $filter !== 'week') {
+            trigger_error('Time filter should be either "day" or "week".  No change made.', E_USER_NOTICE);
+            return;
+        }
+
+        $this->timeFilter = $filter;
     }
 
     public function store($measurements)

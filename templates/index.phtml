@@ -1,97 +1,108 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8"/>
-    <title>PHP Slim Weather App</title>
-    <link rel="stylesheet" href="/weather/css/index.css" type="text/css"/>
-</head>
-<body>
-<?php include "header.phtml"; ?>
-<main>
-    <h1>Demo Weather App</h1>
-    <p>This is a demonstration web app for the display of weather information for a selection of cities.</p>
-    <p>The weather data is updated every 3 hours from either <a href="https://openweathermap.org/api"
-                                                                target="_blank">OpenWeatherMap</a> or <a
-                href="https://developer.yahoo.com/weather/" target="_blank">Yahoo</a>.</p>
-    <p>This web application was written by Paul Young using Slim (a micro framework for PHP).</p>
-    <p>View the source code on <a href="https://github.com/Evoke-PHP/PSW">github</a>!</p>
+    <head>
+        <meta charset="utf-8"/>
+        <title>PHP Slim Weather App</title>
+        <link rel="stylesheet" href="/weather/css/index.css" type="text/css"/>
+    </head>
+    <body>
+        <?php include "header.phtml"; ?>
+        <main>
+            <h1>Demo Weather App</h1>
+            <p>This is a demonstration web app for the display of weather information for a selection of cities.</p>
+            <p>The weather data is updated every 3 hours from either <a href="https://openweathermap.org/api"
+                                                                        target="_blank">OpenWeatherMap</a> or <a
+                        href="https://developer.yahoo.com/weather/" target="_blank">Yahoo</a>.</p>
+            <p>This web application was written by Paul Young using Slim (a micro framework for PHP).</p>
+            <p>View the source code on <a href="https://github.com/Evoke-PHP/PSW">github</a>!</p>
 
-    <table>
-        <thead>
-        <tr>
-            <td></td>
-            <?php
-            ksort($locations);
+            <table>
+                <thead>
+                    <tr class="upper_header">
+                        <td colspan="<?= count($locations) + 2 ?>">
+                            <div class="time_filter">
+                                <span>Show</span>
+                                <span class="button_group">
+                                    <a class="button first" href="?t=day" <?= $time_filter === 'day' ? 'selected="selected"' : '' ?>>Day</a>
+                                    <a class="button last" href="?t=week" <?= $time_filter === 'week' ? 'selected="selected"' : '' ?>>Week</a>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <?php
+                        ksort($locations);
 
-            foreach ($locations as $id => $location) {
-                echo '<th>' . htmlspecialchars($location) . '</th>';
-            }
-            ?>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        // Round the current time to the nearest measured interval
-        $time = new DateTime;
-        $time->setTimezone(new DateTimeZone('UTC'));
-        $hours            = $time->format('H');
-        $minutes          = $time->format('i');
-        $seconds          = $time->format('s');
-        $totalSeconds     = (int)($seconds) + (int)($minutes * 60) + (int)($hours * 3600);
-        $remainderSeconds = $totalSeconds % (10800); // 3 hours
+                        foreach ($locations as $id => $location) {
+                            echo '<th>' . htmlspecialchars($location) . '</th>';
+                        }
+                        ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Round the current time to the nearest measured interval
+                    $time = new DateTime;
+                    $time->setTimezone(new DateTimeZone('UTC'));
+                    $hours            = $time->format('H');
+                    $minutes          = $time->format('i');
+                    $seconds          = $time->format('s');
+                    $totalSeconds     = (int)($seconds) + (int)($minutes * 60) + (int)($hours * 3600);
+                    $remainderSeconds = $totalSeconds % (10800); // 3 hours
 
-        if ($remainderSeconds > 5400) { // 1.5 hours
-            $time->add(new DateInterval('PT' . (10800 - $remainderSeconds) . 'S'));
-        } else {
-            $time->sub(new DateInterval('PT' . $remainderSeconds . 'S'));
-        }
+                    if ($remainderSeconds > 5400) { // 1.5 hours
+                        $time->add(new DateInterval('PT' . (10800 - $remainderSeconds) . 'S'));
+                    } else {
+                        $time->sub(new DateInterval('PT' . $remainderSeconds . 'S'));
+                    }
 
-        foreach ($time_intervals as $intervalsAgo => $locationReadings) {
-            echo "<tr>";
-            $rowElements = [];
+                    foreach ($time_intervals as $intervalsAgo => $locationReadings) {
+                        echo "<tr>";
+                        $rowElements = [];
 
-            foreach ($locationReadings as $locationID => $readings) {
-                foreach ($readings as $readingID => $reading) {
-                    $poweredByYahoo = (strstr($reading['icon'], 'yimg') !== false) ?
-                        '<a class="powered_by_yahoo" href="https://www.yahoo.com/?ilc=401" target="_blank">' .
-                        '<img src="https://poweredby.yahoo.com/purple.png" width="134" height="29"/></a>'
-                        : '';
+                        foreach ($locationReadings as $locationID => $readings) {
+                            foreach ($readings as $readingID => $reading) {
+                                $poweredByYahoo = (strstr($reading['icon'], 'yimg') !== false) ?
+                                    '<a class="powered_by_yahoo" href="https://www.yahoo.com/?ilc=401" target="_blank">' .
+                                    '<img src="https://poweredby.yahoo.com/purple.png" width="134" height="29"/></a>'
+                                    : '';
 
-                    $rowElements[$locationID] =
-                        '<a class="weather_reading" href="/weather/measurement/' . (int)($readingID) . '">' .
-                        '<img class="icon" src="' . htmlspecialchars($reading['icon']) . '" ' .
-                        'alt="' . htmlspecialchars($reading['short_description']) . '"/>' .
-                        '<div class="temperature">' . htmlspecialchars($reading['temperature']) . '&deg;C</div>' .
-                        '<div class="humidity">' . htmlspecialchars($reading['humidity']) . '%</div>' .
-                        '<div class="short_description">' . htmlspecialchars($reading['short_description']) . '</div>' .
-                        '</a>' . $poweredByYahoo .
-                        '<a class="comments button" href="/weather/measurement/' . (int)($readingID) . '">' .
-                        (int)($reading['comments']) . '</a>';
-                }
-            }
+                                $rowElements[$locationID] =
+                                    '<a class="weather_reading" href="/weather/measurement/' . (int)($readingID) . '">' .
+                                    '<img class="icon" src="' . htmlspecialchars($reading['icon']) . '" ' .
+                                    'alt="' . htmlspecialchars($reading['short_description']) . '"/>' .
+                                    '<div class="temperature">' . htmlspecialchars($reading['temperature']) . '&deg;C</div>' .
+                                    '<div class="humidity">' . htmlspecialchars($reading['humidity']) . '%</div>' .
+                                    '<div class="short_description">' . htmlspecialchars($reading['short_description']) . '</div>' .
+                                    '</a>' . $poweredByYahoo .
+                                    '<a class="comments button" href="/weather/measurement/' . (int)($readingID) . '">' .
+                                    (int)($reading['comments']) . '</a>';
+                            }
+                        }
 
-            $measurementTime = clone $time;
+                        $measurementTime = clone $time;
 
-            if ($intervalsAgo > 0) {
-                $measurementTime->sub(new DateInterval('PT' . ($intervalsAgo * 3) . 'H'));
-            }
+                        if ($intervalsAgo > 0) {
+                            $measurementTime->sub(new DateInterval('PT' . ($intervalsAgo * 3) . 'H'));
+                        }
 
-            echo "<th>{$measurementTime->format('Y-m-d H:i e')}</th>";
-            foreach ($locations as $id => $location) {
-                if (isset($rowElements[$id])) {
-                    echo "<td>$rowElements[$id]</td>";
-                } else {
-                    echo "<td>No data</td>";
-                }
-            }
+                        echo "<th>{$measurementTime->format('Y-m-d H:i e')}</th>";
+                        foreach ($locations as $id => $location) {
+                            if (isset($rowElements[$id])) {
+                                echo "<td>$rowElements[$id]</td>";
+                            } else {
+                                echo "<td>No data</td>";
+                            }
+                        }
 
-            echo "</tr>";
-        }
-        ?>
-        </tbody>
-    </table>
+                        echo "</tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
 
-    <p>Created by Paul Young using the PHP Slim framework.</p>
-</main>
-</body>
+            <p>Created by Paul Young using the PHP Slim framework.</p>
+        </main>
+    </body>
 </html>

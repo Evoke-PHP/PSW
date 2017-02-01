@@ -58,10 +58,13 @@ class Weather
 
     public function show(Request $request, Response $response)
     {
+        $this->modelWeatherReading->setTimeFilter($request->getParam('t', 'day'));
+
         $this->renderer->render(
             $response,
             'index.phtml',
-            $this->modelWeatherReading->getSummaryDataByTimeInterval()
+            $this->modelWeatherReading->getSummaryDataByTimeInterval() +
+            ['time_filter' => $this->modelWeatherReading->getTimeFilter()]
         );
     }
 
