@@ -1,0 +1,34 @@
+<td class='filter' colspan="<?= count($locations) + 2 ?>">
+    <?php if ($pages > 1): ?>
+        <div class="pagination">
+            <span class="button_group">
+                <a class="button first<?= $page === 1 ? ' disabled' : '' ?>"
+                   href="?<?= http_build_query(['p' => 1, 't' => $time_filter]) ?>"><?= "|<" ?></a>
+                <a class="button<?= $page === 1 ? ' disabled' : '' ?>" href="?<?= http_build_query([
+                    'p' => max(1, $page - 1),
+                    't' => $time_filter
+                ]) ?>"><?= "<" ?></a>
+                <span class="button"><?= ucfirst($time_filter) . " $page of $pages" ?></span>
+                <a class="button<?= $page === $pages ? ' disabled' : '' ?>"
+                   href="?<?= http_build_query([
+                       'p' => min($pages, $page + 1),
+                       't' => $time_filter
+                   ]) ?>"><?= ">" ?></a>
+                <a class="button last<?= $page === $pages ? ' disabled' : '' ?>"
+                   href="?<?= http_build_query([
+                       'p' => $pages,
+                       't' => $time_filter
+                   ]) ?>"><?= ">|" ?></a>
+            </span>
+        </div>
+    <?php endif; ?>
+    <div class="time_filter">
+        <span>Show</span>
+        <span class="button_group">
+            <a class="button first<?= $time_filter === 'day' ? ' selected' : '' ?>"
+               href="?<?= http_build_query(['p' => $page, 't' => 'day']) ?>">Day</a>
+            <a class="button last<?= $time_filter === 'week' ? ' selected' : '' ?>"
+               href="?<?= http_build_query(['p' => $page, 't' => 'week']) ?>">Week</a>
+        </span>
+    </div>
+</td>
