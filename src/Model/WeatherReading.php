@@ -6,6 +6,8 @@
  */
 namespace PSW\Model;
 
+use DateTime;
+use DateInterval;
 use PDO;
 
 /**
@@ -21,6 +23,21 @@ class WeatherReading
      * @var PDO
      */
     protected $pdo;
+
+    /**
+     * @var int
+     */
+    protected $currentPage;
+
+    /**
+     * @var int
+     */
+    protected $pages;
+
+    /**
+     * @var string
+     */
+    protected $timeFilter = 'day';
 
     /**
      * WeatherReading constructor.
@@ -46,6 +63,16 @@ SQL
             ':username'           => $comment['name'],
             ':comment_text'       => $comment['comment']
         ]);
+    }
+
+    public function getPage() : int
+    {
+        return $this->currentPage;
+    }
+
+    public function getPages() : int
+    {
+        return $this->pages;
     }
 
     public function getReading(int $readingID) : array
@@ -110,6 +137,17 @@ SQL
 
     public function getSummaryDataByTimeInterval() : array
     {
+        $this->pdo->beginTransaction();
+        $oldestMeasurement = $this->pdo->query('SELECT MIN(weather_reading.measurement_time) FROM weather_reading');
+        $timeOffset = new DateTime;
+        $periodOfMeasurements = $timeOffset->diff(new DateTime($oldestMeasurement->fetchColumn()));
+        $daysOfMeasurements = $periodOfMeasurements->format('%a');
+        $this->pages = ceil($daysOfMeasurements / ($this->timeFilter === 'week' ? 7 : 1));
+
+        if ($this->currentPage > $this->pages) {
+            $this->currentPage = $this->pages;
+        }
+
         $stmt = $this->pdo->prepare(<<<SQL
 SELECT
     location.name,
@@ -128,14 +166,26 @@ FROM
     LEFT JOIN location ON weather_reading.location_id = location.id
     LEFT JOIN weather_reading_comment ON weather_reading.id = weather_reading_comment.weather_reading_id
 WHERE
-    weather_reading.measurement_time > (NOW() - INTERVAL 1 WEEK)
+    weather_reading.measurement_time >= :time_from AND
+    weather_reading.measurement_time <= :time_to
 GROUP BY
     weather_reading.id
 ORDER BY
     intervals_ago,location_id,measurement_time
 SQL
         );
-        $stmt->execute();
+
+        $periodIndicator = $this->timeFilter === 'week' ? 'W' : 'D';
+        $timeOffset->sub(new DateInterval('P' . (string)($this->currentPage - 1) . $periodIndicator));
+        $timeTo = $timeOffset->format('Y-m-d H:i:s');
+        $timeOffset->sub(new DateInterval('P1' . $periodIndicator));
+        $timeFrom = $timeOffset->format('Y-m-d H:i:s');
+
+        $stmt->execute(
+            [
+                ':time_from' => $timeFrom,
+                ':time_to'   => $timeTo
+            ]);
 
         $weatherByTimeInterval = [];
         $locations             = [];
@@ -171,6 +221,11 @@ SQL
         return ['locations' => $locations, 'time_intervals' => $weatherByTimeInterval];
     }
 
+    public function getTimeFilter() : string
+    {
+        return $this->timeFilter;
+    }
+
     /**
      * Get the locations as an array indexed by their feed id's.
      *
@@ -182,6 +237,25 @@ SQL
         $stmt = $this->pdo->query('SELECT ' . $feedId . ',id FROM location');
 
         return $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+    }
+
+    public function setPage(int $currentPage)
+    {
+        $this->currentPage = max($currentPage, 1);
+    }
+
+    public function setTimeFilter(string $filter)
+    {
+        if ($filter !== 'day' && $filter !== 'week') {
+            trigger_error(
+                'Time filter should be either "day" or "week". Received: ' . var_export($filter, true) .
+                ' No change made.',
+                E_USER_NOTICE
+            );
+            return;
+        }
+
+        $this->timeFilter = $filter;
     }
 
     public function store($measurements)

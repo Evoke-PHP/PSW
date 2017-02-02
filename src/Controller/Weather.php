@@ -58,10 +58,18 @@ class Weather
 
     public function show(Request $request, Response $response)
     {
+        $this->modelWeatherReading->setPage($request->getParam('p', 1));
+        $this->modelWeatherReading->setTimeFilter($request->getParam('t', 'day'));
+
         $this->renderer->render(
             $response,
             'index.phtml',
-            $this->modelWeatherReading->getSummaryDataByTimeInterval()
+            $this->modelWeatherReading->getSummaryDataByTimeInterval() +
+            [
+                'page'        => $this->modelWeatherReading->getPage(),
+                'pages'       => $this->modelWeatherReading->getPages(),
+                'time_filter' => $this->modelWeatherReading->getTimeFilter()
+            ]
         );
     }
 
@@ -70,7 +78,7 @@ class Weather
         $measurements = $this->modelWeatherReading->getReading($args['measurement']);
         $measurement = reset($measurements);
 
-       $nameKey = $this->csrf->getTokenNameKey();
+        $nameKey = $this->csrf->getTokenNameKey();
         $valueKey = $this->csrf->getTokenValueKey();
         $name = $request->getAttribute($nameKey);
         $value = $request->getAttribute($valueKey);
