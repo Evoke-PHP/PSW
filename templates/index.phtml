@@ -4,6 +4,7 @@
         <meta charset="utf-8"/>
         <title>PHP Slim Weather App</title>
         <link rel="stylesheet" href="/weather/css/index.css" type="text/css"/>
+        <script src="/weather/js/localtime.js" type="text/javascript"></script>
     </head>
     <body>
         <?php include "header.phtml"; ?>
@@ -19,15 +20,7 @@
             <table>
                 <thead>
                     <tr class="upper_header">
-                        <td colspan="<?= count($locations) + 2 ?>">
-                            <div class="time_filter">
-                                <span>Show</span>
-                                <span class="button_group">
-                                    <a class="button first" href="?t=day" <?= $time_filter === 'day' ? 'selected="selected"' : '' ?>>Day</a>
-                                    <a class="button last" href="?t=week" <?= $time_filter === 'week' ? 'selected="selected"' : '' ?>>Week</a>
-                                </span>
-                            </div>
-                        </td>
+                        <?php include("index_table_filter.phtml"); ?>
                     </tr>
                     <tr>
                         <td></td>
@@ -87,7 +80,7 @@
                             $measurementTime->sub(new DateInterval('PT' . ($intervalsAgo * 3) . 'H'));
                         }
 
-                        echo "<th>{$measurementTime->format('Y-m-d H:i e')}</th>";
+                        echo '<th class="time">' . $measurementTime->format('Y/m/d H:i e') . '</th>';
                         foreach ($locations as $id => $location) {
                             if (isset($rowElements[$id])) {
                                 echo "<td>$rowElements[$id]</td>";
@@ -100,6 +93,9 @@
                     }
                     ?>
                 </tbody>
+                <tfoot>
+                    <?php include("index_table_filter.phtml"); ?>
+                </tfoot>
             </table>
 
             <p>Created by Paul Young using the PHP Slim framework.</p>
