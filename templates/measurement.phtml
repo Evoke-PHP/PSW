@@ -4,6 +4,7 @@
         <meta charset="utf-8"/>
         <title>PHP Slim Weather App</title>
         <link rel="stylesheet" href="/weather/css/measurement.css" type="text/css"/>
+        <script src="/js/weather/localtime.js" type="application/javascript"></script>
     </head>
     <body>
         <?php include "header.phtml"; ?>
@@ -19,7 +20,8 @@
                  <?php
                     $utcTime = new DateTime($measurement['measurement_time']);
                     $utcTime->setTimezone(new DateTimeZone('UTC'));
-                    echo '<div class="time">Measured at ' . $utcTime->format('Y-m-d H:i:s e') . '</div>';
+                    echo '<div class="measured_at">Measured at <span class="time">' . $utcTime->format('Y/m/d H:i e') .
+                        '</span></div>';
                  ?>
                  <div class="clear"></div>
              </article>

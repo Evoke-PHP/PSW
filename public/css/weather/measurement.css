@@ -52,7 +52,7 @@ main {
     margin: 20px;
     float: left;
     font-size: 2em; }
-  .weather_reading .time {
+  .weather_reading .measured_at {
     clear: both;
     margin: 10px; }
 
