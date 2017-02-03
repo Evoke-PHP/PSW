@@ -4,18 +4,19 @@
  *
  * @package   PSW\Model
  */
-namespace PSW\Model;
+namespace PSW\Model\Feed;
 
 use DateTime,
     DOMDocument,
-    DomainException;
+    DomainException,
+    RuntimeException;
 
 /**
  * YahooFeed
  *
  * @author    Paul Young <evoke@youngish.org>
  * @copyright Copyright (c) 2017 Paul Young
- * @package   PSW\Model
+ * @package   PSW\Model\Feed
  */
 class YahooFeed extends LocationFeed
 {
@@ -45,13 +46,13 @@ class YahooFeed extends LocationFeed
         );
 
         if ($result === false) {
-            throw new \RuntimeException('Error connecting to yahoo weather feed.');
+            throw new RuntimeException('Error connecting to yahoo weather feed.');
         }
 
         $decodedResult = json_decode($result, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \DomainException('Unable to decode: ' . var_export($result, true));
+            throw new DomainException('Unable to decode: ' . var_export($result, true));
         }
 
         $formattedResults = [];
@@ -63,7 +64,7 @@ class YahooFeed extends LocationFeed
                 $measurementTime = new DateTime($item['condition']['date']);
 
                 $formattedResults[] = [
-                    'location_id'       => $this->locations[$location],
+                    'location_id'       => $this->locations[$location]['id'],
                     'measurement_time'  => $measurementTime->getTimestamp(),
                     'icon'              => $icon,
                     'temperature'       => $item['condition']['temp'],

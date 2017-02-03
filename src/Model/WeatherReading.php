@@ -49,19 +49,20 @@ class WeatherReading
         $this->pdo = $pdo;
     }
 
-    public function addComment($comment)
+    public function addCam($cam)
     {
         $stmt = $this->pdo->prepare(<<<SQL
 INSERT INTO
-    weather_reading_comment (weather_reading_id, username, comment_text)
-    VALUES (:weather_reading_id,:username,:comment_text)
+    weather_reading_cam (weather_reading_id, image_url, url, measurement_time)
+    VALUES (:weather_reading_id,:image_url,:url,:measurement_time)
 SQL
         );
 
         $stmt->execute([
-            ':weather_reading_id' => $comment['measurement'],
-            ':username'           => $comment['name'],
-            ':comment_text'       => $comment['comment']
+            ':weather_reading_id' => $cam['measurement'],
+            ':image_url'          => $cam['image_url'],
+            ':url'                => $cam['url'],
+            'measurement_time'    => $cam['measurement_time']
         ]);
     }
 
@@ -226,19 +227,6 @@ SQL
         return $this->timeFilter;
     }
 
-    /**
-     * Get the locations as an array indexed by their feed id's.
-     *
-     * @param string $feedId The feed id must not come from user input.
-     * @return array
-     */
-    public function getLocations(string $feedId): array
-    {
-        $stmt = $this->pdo->query('SELECT ' . $feedId . ',id FROM location');
-
-        return $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-    }
-
     public function setPage(int $currentPage)
     {
         $this->currentPage = max($currentPage, 1);
@@ -258,8 +246,17 @@ SQL
         $this->timeFilter = $filter;
     }
 
-    public function store($measurements)
+    /**
+     * Store the measurements returning the list of new weather_reading.id's created for each location.
+     * @param array $measurements
+     * @param int $count
+     * @return array
+     */
+    public function store(array $measurements, int $count) : array
     {
+        $locationsStored = [];
+
+        $this->pdo->beginTransaction();
         $stmt = $this->pdo->prepare(<<<SQL
 INSERT INTO
     weather_reading (location_id,measurement_time, icon, temperature, humidity, description, short_description)
@@ -269,7 +266,20 @@ SQL
 
         foreach ($measurements as $reading) {
             $stmt->execute($reading);
+            $locationsStored[$reading['location_id']] = $this->pdo->lastInsertId();
         }
+
+        if (count($locationsStored) !== $count) {
+            $this->pdo->rollBack();
+            throw new \RuntimeException(
+                'Not all feed measurements could be recorded (only ' . count($locationsStored) . ' of ' . $count . ')' .
+                ' for data: ' . var_export($measurements, true)
+            );
+        }
+
+        $this->pdo->commit();
+
+        return $locationsStored;
     }
 }
 // EOF

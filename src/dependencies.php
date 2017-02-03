@@ -22,27 +22,48 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
-// PDO
-$container['db'] = function ($c) {
+$container['PDO'] = function ($c) {
     $settings = $c->get('settings')['db'];
     return new PDO($settings['dsn'], $settings['username'], $settings['passwd'], $settings['options']);
 };
 
-$container['ModelDataFeeds'] = function ($c) {
+$container['WeatherFeeds'] = function ($c) {
     return [
-        new PSW\Model\OpenWeatherMapFeed($c->get('settings')['weather_api_key']),
-        new PSW\Model\YahooFeed
+        new PSW\Model\Feed\OpenWeatherMapFeed($c->get('settings')['weather_api_key']),
+        new PSW\Model\Feed\YahooFeed
     ];
 };
 
-$container['ModelWeatherReading'] = function ($c) {
-    return new PSW\Model\WeatherReading($c->get('db'));
+$container['PSW\Model\WeatherReading'] = function ($c) {
+    return new PSW\Model\WeatherReading($c->get('PDO'));
 };
 
-$container['\PSW\Controller\Weather'] = function ($c) {
+
+
+$container['PSW\Controller\Update'] = function ($c) {
+    $pdo = $c->get('PDO');
+
+    return new PSW\Controller\Update(
+        new PSW\Model\Feed\CamFeed,
+        new PSW\Model\Cam($pdo),
+        new PSW\Model\Location($pdo),
+        $c->get('WeatherFeeds'),
+        $c->get('PSW\Model\WeatherReading')
+    );
+};
+
+
+$container['PSW\Controller\Cam'] = function ($c) {
+    return new \PSW\Controller\Cam(
+        new \PSW\Model\Feed\CamFeed,
+        new \PSW\Model\Location($c->get('PDO'))
+    );
+};
+
+$container['PSW\Controller\Weather'] = function ($c) {
     return new PSW\Controller\Weather(
         $c->get('csrf'),
-        $c->get('ModelWeatherReading'),
+        $c->get('PSW\Model\WeatherReading'),
         $c->get('renderer')
     );
 };
