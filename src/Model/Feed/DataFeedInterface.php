@@ -2,16 +2,16 @@
 /**
  * DataFeedInterface
  *
- * @package   PSW\Model
+ * @package   PSW\Model\Feed
  */
-namespace PSW\Model;
+namespace PSW\Model\Feed;
 
 /**
  * DataFeedInterface
  *
  * @author    Paul Young <evoke@youngish.org>
  * @copyright Copyright (c) 2017 Paul Young
- * @package   PSW\Model
+ * @package   PSW\Model\Feed
  */
 interface DataFeedInterface
 {
@@ -26,12 +26,5 @@ interface DataFeedInterface
      * @return mixed[]
      */
     function getData() : array;
-
-    /**
-     * Set the locations that we are getting data for.
-     * @param array $locations
-     * @return mixed
-     */
-    function setLocations(Array $locations);
 }
 // EOF
