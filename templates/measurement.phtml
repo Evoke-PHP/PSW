@@ -9,22 +9,37 @@
     <body>
         <?php include "header.phtml"; ?>
         <main>
+            <div class="container">
+            <article class="weather_reading">
+                <h1><?= htmlspecialchars($measurement['location']) ?></h1>
+                <img class="icon" src="<?= htmlspecialchars($measurement['icon']) ?>" alt="icon for <?= htmlspecialchars($measurement['short_description']) ?>"/>
+                <div class="temperature"><?= htmlspecialchars($measurement['temperature']) ?>&deg;C</div>
+                <div class="humidity"><?= htmlspecialchars($measurement['humidity']) ?>%</div>
+                <div class="description"><?= htmlspecialchars($measurement['description']) ?></div>
 
-             <article class="weather_reading">
-                 <h1><?= htmlspecialchars($measurement['location']) ?></h1>
-                 <img class="icon" src="<?= htmlspecialchars($measurement['icon']) ?>" alt="icon for <?= htmlspecialchars($measurement['short_description']) ?>"/>
-                 <div class="temperature"><?= htmlspecialchars($measurement['temperature']) ?>&deg;C</div>
-                 <div class="humidity"><?= htmlspecialchars($measurement['humidity']) ?>%</div>
-                 <div class="description"><?= htmlspecialchars($measurement['description']) ?></div>
+                <?php
+                   $utcTime = new DateTime($measurement['measurement_time']);
+                   $utcTime->setTimezone(new DateTimeZone('UTC'));
+                   echo '<div class="measured_at">Measured at <span class="time">' . $utcTime->format('Y/m/d H:i e') .
+                       '</span></div>';
+                ?>
+                <div class="clear"></div>
+            </article>
+            <div class="spacer"></div>
+            <?php if (!empty($measurement['cam'])) : ?>
+                <article class="webcam">
+                    <a href="<?= $measurement['cam']['url'] ?>">
+                        <img src="<?= $measurement['cam']['image_url'] ?>" alt="webcam"/>
+                    </a>
+                    <div><?= $measurement['cam']['cam_title'] ?></div>
+                    <div class="time"><?= $measurement['cam']['measurement_time'] ?></div>
+                    <div>Webcam provided by <a href="http://webcams.travel/api/"
+                                               target="_blank">webcams.travel</a></div>
+                </article>
+            <?php endif; ?>
+            </div>
 
-                 <?php
-                    $utcTime = new DateTime($measurement['measurement_time']);
-                    $utcTime->setTimezone(new DateTimeZone('UTC'));
-                    echo '<div class="measured_at">Measured at <span class="time">' . $utcTime->format('Y/m/d H:i e') .
-                        '</span></div>';
-                 ?>
-                 <div class="clear"></div>
-             </article>
+            <div class="clear"></div>
 
             <form class="add_comment" method="POST" action="/weather/measurement/<?= htmlspecialchars($measurement['id']) ?>/comment">
                 <h2>Add a comment</h2>

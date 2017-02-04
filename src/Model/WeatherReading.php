@@ -91,11 +91,17 @@ SELECT
     weather_reading_comment.id AS comment_id,
     weather_reading_comment.comment_text,
     weather_reading_comment.comment_time,
-    weather_reading_comment.username
+    weather_reading_comment.username,
+    weather_reading_cam.id AS cam_id,
+    weather_reading_cam.cam_title,
+    weather_reading_cam.image_url,
+    weather_reading_cam.measurement_time,
+    weather_reading_cam.url
 FROM
     weather_reading
     LEFT JOIN location ON weather_reading.location_id = location.id
     LEFT JOIN weather_reading_comment ON weather_reading.id = weather_reading_comment.weather_reading_id
+    LEFT JOIN weather_reading_cam ON weather_reading.id = weather_reading_cam.weather_reading_id
 WHERE
     weather_reading.id = :id
 ORDER BY
@@ -109,6 +115,7 @@ SQL
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $id        = $row['id'];
             $commentID = $row['comment_id'];
+            $camID     = $row['cam_id'];
 
             if (!isset($reading[$id])) {
                 $reading[$id] = [
@@ -120,7 +127,8 @@ SQL
                     'icon'              => $row['icon'],
                     'short_description' => $row['short_description'],
                     'temperature'       => $row['temperature'],
-                    'comments'          => []
+                    'comments'          => [],
+                    'cam'               => []
                 ];
             }
 
@@ -129,6 +137,15 @@ SQL
                     'comment_text' => $row['comment_text'],
                     'comment_time' => $row['comment_time'],
                     'username'     => $row['username']
+                ];
+            }
+
+            if (isset($camID)) {
+                $reading[$id]['cam'] = [
+                    'cam_title'        => $row['cam_title'],
+                    'image_url'        => $row['image_url'],
+                    'measurement_time' => $row['measurement_time'],
+                    'url'              => $row['url']
                 ];
             }
         }
