@@ -31,10 +31,12 @@
                     <a href="<?= $measurement['cam']['url'] ?>">
                         <img src="<?= $measurement['cam']['image_url'] ?>" alt="webcam"/>
                     </a>
-                    <div><?= $measurement['cam']['cam_title'] ?></div>
-                    <div class="time"><?= $measurement['cam']['measurement_time'] ?></div>
-                    <div>Webcam provided by <a href="http://webcams.travel/api/"
+                    <div class="details">
+                        <div class="title"><?= $measurement['cam']['cam_title'] ?></div>
+                        <div class="time"><?= $measurement['cam']['measurement_time'] ?></div>
+                        <div class="courtesy">Webcam snapshot provided by <a href="http://webcams.travel/api/"
                                                target="_blank">webcams.travel</a></div>
+                    </div>
                 </article>
             <?php endif; ?>
             </div>

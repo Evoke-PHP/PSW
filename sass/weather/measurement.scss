@@ -20,12 +20,26 @@
 }
 
 .webcam {
+    border: 2px solid $dark_purple;
     display: table-cell;
     max-width: 600px;
+    line-height: 1.4;
 
     img {
         width: 400px;
         height: 224px;
+    }
+
+    .details {
+        padding: 15px;
+
+        .title {
+            font-weight: 900;
+        }
+
+        .courtesy {
+            font-size: 0.8em;
+        }
     }
 }
 

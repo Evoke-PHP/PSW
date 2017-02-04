@@ -44,11 +44,19 @@ main {
   width: 800px; }
 
 .webcam {
+  border: 2px solid #8800aa;
   display: table-cell;
-  max-width: 600px; }
+  max-width: 600px;
+  line-height: 1.4; }
   .webcam img {
     width: 400px;
     height: 224px; }
+  .webcam .details {
+    padding: 15px; }
+    .webcam .details .title {
+      font-weight: 900; }
+    .webcam .details .courtesy {
+      font-size: 0.8em; }
 
 .weather_reading {
   border-radius: 20px 20px 0px 0px;
