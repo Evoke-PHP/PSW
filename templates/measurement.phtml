@@ -54,6 +54,7 @@
                 <input name="add" type="submit" value="Add comment"/>
             </form>
 
+            <?php if (count($measurement['comments']) > 0) : ?>
             <section class="comments">
                 <h1>Comments<span class="comment_count"><?= count($measurement['comments']) ?> comments</span></h1>
                 <?php
@@ -74,6 +75,7 @@ COMMENT;
                 }
                 ?>
             </section>
+            <?php endif; ?>
         </main>
     </body>
 </html>

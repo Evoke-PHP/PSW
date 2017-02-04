@@ -6,6 +6,8 @@
  */
 namespace PSW\Model;
 
+use PDO;
+
 /**
  * Comment
  *
@@ -30,7 +32,7 @@ class Comment
         $this->pdo = $pdo;
     }
 
-    public function addComment($comment)
+    public function store($comment)
     {
         $stmt = $this->pdo->prepare(<<<SQL
 INSERT INTO
