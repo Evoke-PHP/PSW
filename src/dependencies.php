@@ -38,7 +38,9 @@ $container['PSW\Model\WeatherReading'] = function ($c) {
     return new PSW\Model\WeatherReading($c->get('PDO'));
 };
 
-
+$container['PSW\Controller\Comment'] = function ($c) {
+    return new PSW\Controller\Comment(new PSW\Model\Comment($c->get('PDO')), $c->get('renderer'));
+};
 
 $container['PSW\Controller\Update'] = function ($c) {
     $pdo = $c->get('PDO');

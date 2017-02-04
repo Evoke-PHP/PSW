@@ -43,17 +43,11 @@ class Weather
      * @param WeatherReading $modelWeatherReading
      * @param PhpRenderer    $renderer
      */
-    public function __construct(Guard $csrf,WeatherReading $modelWeatherReading, PhpRenderer $renderer)
+    public function __construct(Guard $csrf, WeatherReading $modelWeatherReading, PhpRenderer $renderer)
     {
         $this->csrf                = $csrf;
         $this->modelWeatherReading = $modelWeatherReading;
         $this->renderer            = $renderer;
-    }
-
-    public function addComment(Request $request, Response $response, array $args)
-    {
-        $this->modelWeatherReading->addComment($args + $request->getParsedBody());
-        return $response->withStatus(302)->withHeader('Location', '/weather/measurement/' . $args['measurement']);
     }
 
     public function show(Request $request, Response $response)
