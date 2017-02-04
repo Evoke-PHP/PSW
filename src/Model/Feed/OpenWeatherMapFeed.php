@@ -4,17 +4,17 @@
  *
  * @package   PSW\Model
  */
-namespace PSW\Model;
+namespace PSW\Model\Feed;
 
-use GuzzleHttp;
-use JsonSchema\Exception\JsonDecodingException;
+use DomainException,
+    RuntimeException;
 
 /**
  * OpenWeatherMapFeed
  *
  * @author    Paul Young <evoke@youngish.org>
  * @copyright Copyright (c) 2017 Paul Young
- * @package   PSW\Model
+ * @package   PSW\Model\Feed
  */
 class OpenWeatherMapFeed extends LocationFeed
 {
@@ -45,20 +45,20 @@ class OpenWeatherMapFeed extends LocationFeed
         );
 
         if ($result === false) {
-            throw new \RuntimeException('Error connecting to openweathermap data feed.');
+            throw new RuntimeException('Error connecting to openweathermap data feed.');
         }
 
         $decodedResult = json_decode($result, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \DomainException('Unable to decode: ' . var_export($result, true));
+            throw new DomainException('Unable to decode: ' . var_export($result, true));
         }
 
         $formattedResults = [];
 
         foreach ($decodedResult['list'] as $measurement) {
             $formattedResults[] = [
-                'location_id'       => $this->locations[$measurement['id']],
+                'location_id'       => $this->locations[$measurement['id']]['id'],
                 'measurement_time'  => $measurement['dt'],
                 'icon'              => 'http://openweathermap.org/img/w/' . $measurement['weather'][0]['icon'] . '.png',
                 'temperature'       => $measurement['main']['temp'],

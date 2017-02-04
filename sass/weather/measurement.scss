@@ -5,10 +5,50 @@
     clear: both;
 }
 
+.container {
+    display: table;
+    margin-bottom: 40px;
+    margin-top: 90px;
+    width: 100%;
+}
+
+.spacer {
+    display: table-cell;
+    min-width: 40px;
+    max-width: 800px;
+    width: 800px;
+}
+
+.webcam {
+    border: 2px solid $dark_purple;
+    display: table-cell;
+    max-width: 600px;
+    line-height: 1.4;
+
+    img {
+        width: 400px;
+        height: 224px;
+    }
+
+    .details {
+        padding: 15px;
+
+        .title {
+            font-weight: 900;
+        }
+
+        .courtesy {
+            font-size: 0.8em;
+        }
+    }
+}
+
 .weather_reading {
     border-radius: 20px 20px 0px 0px;
     border: 2px solid $dark_purple;
-    float: right;
+    display: table-cell;
+    min-width: 320px;
+    vertical-align: top;
     width: 480px;
 
     h1 {
